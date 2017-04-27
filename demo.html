@@ -10,7 +10,7 @@
 <script>
     let mazeData = [
         [1, 0, 0, 0, 0],
-        [1, 1, 0, 1, 0],
+        [1, 0, 0, 1, 0],
         [0, 1, 0, 1, 0],
         [0, 1, 1, 1, 1],
         [0, 0, 0, 0, 1]
@@ -38,47 +38,58 @@
 
             if (!node.isVisited) {
                 node.isVisited = true;
+                console.log(node)
                 queue.unshift(node); // 入队
-
                 while (queue.length) { // 队列非空
+                    // console.log(queue.length);
                     let u = queue.shift(); // 队首元素 出队
-                    // console.log(u);
                     u.neighbor = [];
                     if (mazeData[i - 1] && mazeData[i - 1][j].value) {// 上
+                        // if(!mazeData[i - 1][j].isVisited)
                         u.neighbor.push(mazeData[i - 1][j]);
                     }
+                    if (mazeData[i][j + 1] && mazeData[i][j + 1].value) {// 右
+                        // if(!mazeData[i][j + 1].isVisited)
+                        u.neighbor.push(mazeData[i][j + 1]);
+                    }
                     if (mazeData[i + 1] && mazeData[i + 1][j].value) {// 下
+                        // if(!mazeData[i + 1][j].isVisited)
                         u.neighbor.push(mazeData[i + 1][j]);
                     }
                     if (mazeData[i][j - 1] && mazeData[i][j - 1].value) {// 左
+                        // if(!mazeData[i][j - 1].isVisited)
                         u.neighbor.push(mazeData[i][j - 1]);
                     }
-                    if (mazeData[i][j + 1] && mazeData[i][j + 1].value) {// 右
-                        u.neighbor.push(mazeData[i][j + 1]);
-                    }
 
+                    // console.log(u.neighbor);
                     // 遍历邻居节点
                     for (neighborNode of u.neighbor) {
                         if (!neighborNode.isVisited) {
                             neighborNode.isVisited = true;
-                            // console.log(neighborNode);
+
                             res.push({
+                                row:i,
+                                col:j,
                                 x: neighborNode.x,
                                 y: neighborNode.y
 
-                            })
+                            });
                             queue.unshift(neighborNode);
+                            // console.log(neighborNode);
+                            // console.log(queue.unshift(neighborNode))
+
                         }
-                    }
-                }
-            }
+                    }// for 遍历邻居节点
+                }// while
+            }// visited
 
         }
 
     }
 
-
-    console.log(res);
+for (node of res){
+      console.log(node);
+}
 
 </script>
 
