@@ -56,6 +56,7 @@
                     if (mazeData[i][j + 1] && mazeData[i][j + 1].value) {// 右
                         u.neighbor.push(mazeData[i][j + 1]);
                     }
+
                     // 遍历邻居节点
                     for (neighborNode of u.neighbor) {
                         if (!neighborNode.isVisited) {
