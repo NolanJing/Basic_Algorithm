@@ -9,56 +9,66 @@
 </div>
 <script>
     let mazeData = [
-        [1, 0, 0, 0, 0],
-        [1, 0, 0, 1, 0],
-        [0, 1, 0, 1, 0],
-        [0, 1, 1, 1, 1],
-        [0, 0, 0, 0, 1]
+        // 0  1  2  3  4  5  6  7  8  9
+        /*0*/   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        /*1*/   [1, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+        /*2*/   [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        /*3*/   [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+        /*4*/   [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+        /*5*/   [0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+        /*6*/   [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        /*7*/   [0, 0, 1, 1, 1, 0, 0, 1, 0, 0],
+        /*8*/   [0, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        /*9*/   [0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
     ];
 
-    for (let i = mazeData.length - 1; i >= 0; i--) {
-        for (let j = mazeData[i].length - 1; j >= 0; j--) {
-            mazeData[i][j] = {
-                value: mazeData[i][j],
-                isVisited: false,
-                x: i,
-                y: j
+    function bfs(mazeData) {
+
+
+        for (let i = mazeData.length - 1; i >= 0; i--) {
+            for (let j = mazeData[i].length - 1; j >= 0; j--) {
+                mazeData[i][j] = {
+                    value: mazeData[i][j],
+                    isVisited: false,
+                    x: i,
+                    y: j
+                }
             }
         }
-    }
-
-    let res = [];
 
 
-    for (let i = mazeData.length - 1; i >= 0; i--) {
-        for (let j = mazeData[i].length - 1; j >= 0; j--) {
+        let res = [];
 
-            let node = mazeData[i][j]// 遍历每个节点
+        let node = mazeData[mazeData.length - 1][mazeData.length - 1]// 遍历每个节点
+
+        while (node) {
+            // console(a)
             let queue = []; // 辅助队列
 
             if (!node.isVisited) {
                 node.isVisited = true;
-                console.log(node)
+                // console.log(node)
                 queue.unshift(node); // 入队
                 while (queue.length) { // 队列非空
                     // console.log(queue.length);
                     let u = queue.shift(); // 队首元素 出队
+                    // console.log(u);
                     u.neighbor = [];
-                    if (mazeData[i - 1] && mazeData[i - 1][j].value) {// 上
-                        // if(!mazeData[i - 1][j].isVisited)
-                        u.neighbor.push(mazeData[i - 1][j]);
+                    if (mazeData[node.x - 1] && mazeData[node.x - 1][node.y].value) {// 上
+                        if (!mazeData[node.x - 1][node.y].isVisited)
+                            u.neighbor.push(mazeData[node.x - 1][node.y]);
                     }
-                    if (mazeData[i][j + 1] && mazeData[i][j + 1].value) {// 右
-                        // if(!mazeData[i][j + 1].isVisited)
-                        u.neighbor.push(mazeData[i][j + 1]);
+                    if (mazeData[node.x][node.y + 1] && mazeData[node.x][node.y + 1].value) {// 右
+                        if (!mazeData[node.x][node.y + 1].isVisited)
+                            u.neighbor.push(mazeData[node.x][node.y + 1]);
                     }
-                    if (mazeData[i + 1] && mazeData[i + 1][j].value) {// 下
-                        // if(!mazeData[i + 1][j].isVisited)
-                        u.neighbor.push(mazeData[i + 1][j]);
+                    if (mazeData[node.x + 1] && mazeData[node.x + 1][node.y].value) {// 下
+                        if (!mazeData[node.x + 1][node.y].isVisited)
+                            u.neighbor.push(mazeData[node.x + 1][node.y]);
                     }
-                    if (mazeData[i][j - 1] && mazeData[i][j - 1].value) {// 左
-                        // if(!mazeData[i][j - 1].isVisited)
-                        u.neighbor.push(mazeData[i][j - 1]);
+                    if (mazeData[node.x][node.y - 1] && mazeData[node.x][node.y - 1].value) {// 左
+                        if (!mazeData[node.x][node.y - 1].isVisited)
+                            u.neighbor.push(mazeData[node.x][node.y - 1]);
                     }
 
                     // console.log(u.neighbor);
@@ -67,29 +77,79 @@
                         if (!neighborNode.isVisited) {
                             neighborNode.isVisited = true;
 
-                            res.push({
-                                row:i,
-                                col:j,
-                                x: neighborNode.x,
-                                y: neighborNode.y
+                            /*res.push({
+                             row: node.x,
+                             col: node.y,
+                             x: neighborNode.x,
+                             y: neighborNode.y
 
-                            });
-                            queue.unshift(neighborNode);
-                            // console.log(neighborNode);
-                            // console.log(queue.unshift(neighborNode))
-
+                             });*/
+                            // neighborNode.pre = u;
+                            queue.push(neighborNode);
                         }
                     }// for 遍历邻居节点
+
+                    node = queue[0];
+                    res.push(node);
+                    // console.log(node);
                 }// while
             }// visited
-
         }
+
+        return res
+    }
+
+
+    let pathTreeArray = bfs(mazeData);
+
+    let pathTree = pathTreeArray[0]
+
+    // console.log(pathTree);
+    // console.log(JSON.stringify(pathTree));
+
+
+    // 打印出所有路径树
+    function printPathTree(pathTree) {
+        res = [];
+        // console.info('x')
+        function getChild(node) {
+            // console.info(node)
+            // console.info('x')
+            if (node.x == 0 && node.y == 0) {
+                res = node;
+                // return res;
+                // console.info(node)
+            } else {
+                // console.log('('+pathTree.x + ',' + pathTree.y + ') ->')
+
+                node.neighbor.forEach(neighbor => {
+                    neighbor.pre = node;
+                    delete node.value;
+                    delete node.isVisited;
+
+                    // console.log('('+neighbor.x + ',' + neighbor.y + ')');
+                    getChild(neighbor);
+                })
+            }// if
+        }// getChild
+
+        //
+        getChild(pathTree);
+        return res;
 
     }
 
-for (node of res){
-      console.log(node);
-}
+
+    var res = printPathTree(pathTree);
+
+    // console.log(res)
+
+    let str = '';
+    while (res) {
+        str = str + '(' + res.x + ',' + res.y + ')' + '->';
+        res = res.pre;
+    }
+    console.log(str)
 
 </script>
 
