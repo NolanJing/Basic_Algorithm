@@ -1,14 +1,5 @@
-let mazeData = [
-    [1, 0, 0, 0, 0],
-    [1, 1, 0, 1, 0],
-    [0, 1, 0, 1, 0],
-    [0, 1, 1, 1, 1],
-    [0, 0, 0, 0, 1]
-];
-
-function bfs(mazeData) {
-
-
+function bfs(maze) {
+    let mazeData = maze;
     for (let i = mazeData.length - 1; i >= 0; i--) {
         for (let j = mazeData[i].length - 1; j >= 0; j--) {
             mazeData[i][j] = {
@@ -20,9 +11,10 @@ function bfs(mazeData) {
         }
     }
 
+
     let res = [];
 
-    let node = mazeData[4][4]// 遍历每个节点
+    let node = mazeData[mazeData.length - 1][mazeData.length - 1]// 遍历每个节点
 
     while (node) {
         // console(a)
@@ -61,16 +53,17 @@ function bfs(mazeData) {
                         neighborNode.isVisited = true;
 
                         /*res.push({
-                            row: node.x,
-                            col: node.y,
-                            x: neighborNode.x,
-                            y: neighborNode.y
+                         row: node.x,
+                         col: node.y,
+                         x: neighborNode.x,
+                         y: neighborNode.y
 
-                        });*/
+                         });*/
+                        // neighborNode.pre = u;
                         queue.push(neighborNode);
                     }
                 }// for 遍历邻居节点
-                // console.log(queue[0]);
+
                 node = queue[0];
                 res.push(node);
                 // console.log(node);
@@ -78,25 +71,59 @@ function bfs(mazeData) {
         }// visited
     }
 
-    return res
-}
+    // return res
+    let pathTree = res[0];
 
+    let endNode = printPathTree(pathTree);
 
-let pathTree = bfs(mazeData)[0];
+    // console.log(endNode)
 
-console.log(pathTree);
-
-function printPathTree(pathTree) {
-    var str ='';
-    function getChild(tree) {
-        if(!tree){
-            //  return
-        } else {
-            getChild(tree.left);
-            getChild(tree.right);
-            str = str + '->' + tree.value;
-            return str;
-        }
+    let pathArray = [];
+    while (endNode) {
+        pathArray.push([endNode.x, endNode.y])
+        endNode = endNode.pre;
     }
+
+    // console.log(pathArray)
+    pathArray.push([maze.length-1, maze.length-1]);
+    return pathArray;
 }
 
+
+
+
+
+
+// console.log(pathTree);
+// console.log(JSON.stringify(pathTree));
+
+
+// 打印出所有路径树
+function printPathTree(pathTree) {
+    res = [];
+    // console.info('x')
+    function getChild(node) {
+        // console.info(node)
+        // console.info('x')
+        if (node.x == 0 && node.y == 0) {
+            res = node;
+            // return res;
+            // console.info(node)
+        } else {
+            node.neighbor.forEach(neighbor => {
+                neighbor.pre = node;
+                getChild(neighbor);
+            })
+        }// if
+    }// getChild
+
+    //
+    getChild(pathTree);
+
+    return res;
+
+}
+
+
+
+// console.log(pathArray)

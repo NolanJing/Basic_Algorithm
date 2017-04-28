@@ -5,14 +5,18 @@
     <title>demo</title>
 </head>
 <body>
-<div id="J_container">
+<div id="maze">
+    <table border="1" class="t">
+
+    </table>
 </div>
+<script src="bfs.js"></script>
 <script>
     let mazeData = [
         // 0  1  2  3  4  5  6  7  8  9
         /*0*/   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         /*1*/   [1, 0, 0, 0, 1, 1, 0, 0, 0, 0],
-        /*2*/   [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+        /*2*/   [1, 1, 1, 1, 1, 1, 0, 1, 0, 0],
         /*3*/   [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
         /*4*/   [0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
         /*5*/   [0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
@@ -22,137 +26,84 @@
         /*9*/   [0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
     ];
 
-    function bfs(mazeData) {
+ let pathArray = bfs(mazeData);
 
 
-        for (let i = mazeData.length - 1; i >= 0; i--) {
-            for (let j = mazeData[i].length - 1; j >= 0; j--) {
-                mazeData[i][j] = {
-                    value: mazeData[i][j],
-                    isVisited: false,
-                    x: i,
-                    y: j
-                }
-            }
+
+
+for(let i = 0,len = mazeData.length; i<len;i++){
+    let tr =document.createElement("tr");
+    // tr.innerHTML = mazeData[i];
+    document.querySelector('table').appendChild(tr);
+
+    for(let j = 0,len = mazeData[i].length; j<len;j++) {
+        let td =document.createElement("td");
+        // td.innerHTML = mazeData[i][j];
+        if(mazeData[i][j].value){
+            // td.setAttribute("class", "path");
+        }else{
+            td.setAttribute("class", "wall");
         }
+        tr.appendChild(td);
+    }
+}
 
+console.log(pathArray);
 
-        let res = [];
+count = 0;
 
-        let node = mazeData[mazeData.length - 1][mazeData.length - 1]// 遍历每个节点
+function animation(pathArray) {
+    if(count<pathArray.length){
+        let trArr = document.getElementsByTagName('tr');
+        let  tdArr = trArr[pathArray[count][0]].getElementsByTagName('td');
+        let cell = tdArr[pathArray[count][1]];
+        // console.log(path);
+        cell.setAttribute("class", "path")
+        count++
 
-        while (node) {
-            // console(a)
-            let queue = []; // 辅助队列
-
-            if (!node.isVisited) {
-                node.isVisited = true;
-                // console.log(node)
-                queue.unshift(node); // 入队
-                while (queue.length) { // 队列非空
-                    // console.log(queue.length);
-                    let u = queue.shift(); // 队首元素 出队
-                    // console.log(u);
-                    u.neighbor = [];
-                    if (mazeData[node.x - 1] && mazeData[node.x - 1][node.y].value) {// 上
-                        if (!mazeData[node.x - 1][node.y].isVisited)
-                            u.neighbor.push(mazeData[node.x - 1][node.y]);
-                    }
-                    if (mazeData[node.x][node.y + 1] && mazeData[node.x][node.y + 1].value) {// 右
-                        if (!mazeData[node.x][node.y + 1].isVisited)
-                            u.neighbor.push(mazeData[node.x][node.y + 1]);
-                    }
-                    if (mazeData[node.x + 1] && mazeData[node.x + 1][node.y].value) {// 下
-                        if (!mazeData[node.x + 1][node.y].isVisited)
-                            u.neighbor.push(mazeData[node.x + 1][node.y]);
-                    }
-                    if (mazeData[node.x][node.y - 1] && mazeData[node.x][node.y - 1].value) {// 左
-                        if (!mazeData[node.x][node.y - 1].isVisited)
-                            u.neighbor.push(mazeData[node.x][node.y - 1]);
-                    }
-
-                    // console.log(u.neighbor);
-                    // 遍历邻居节点
-                    for (neighborNode of u.neighbor) {
-                        if (!neighborNode.isVisited) {
-                            neighborNode.isVisited = true;
-
-                            /*res.push({
-                             row: node.x,
-                             col: node.y,
-                             x: neighborNode.x,
-                             y: neighborNode.y
-
-                             });*/
-                            // neighborNode.pre = u;
-                            queue.push(neighborNode);
-                        }
-                    }// for 遍历邻居节点
-
-                    node = queue[0];
-                    res.push(node);
-                    // console.log(node);
-                }// while
-            }// visited
-        }
-
-        return res
+    }else{
+        clearInterval(sh)
+        console.log('finded the path')
     }
 
 
-    let pathTreeArray = bfs(mazeData);
-
-    let pathTree = pathTreeArray[0]
-
-    // console.log(pathTree);
-    // console.log(JSON.stringify(pathTree));
+}
 
 
-    // 打印出所有路径树
-    function printPathTree(pathTree) {
-        res = [];
-        // console.info('x')
-        function getChild(node) {
-            // console.info(node)
-            // console.info('x')
-            if (node.x == 0 && node.y == 0) {
-                res = node;
-                // return res;
-                // console.info(node)
-            } else {
-                // console.log('('+pathTree.x + ',' + pathTree.y + ') ->')
 
-                node.neighbor.forEach(neighbor => {
-                    neighbor.pre = node;
-                    delete node.value;
-                    delete node.isVisited;
-
-                    // console.log('('+neighbor.x + ',' + neighbor.y + ')');
-                    getChild(neighbor);
-                })
-            }// if
-        }// getChild
-
-        //
-        getChild(pathTree);
-        return res;
-
-    }
+   /* pathArray.forEach( path => {
+                 setTimeout('animation(path)',100);
+    })*/
 
 
-    var res = printPathTree(pathTree);
 
-    // console.log(res)
 
-    let str = '';
-    while (res) {
-        str = str + '(' + res.x + ',' + res.y + ')' + '->';
-        res = res.pre;
-    }
-    console.log(str)
+    // setInterval(animation,2000);
+     let sh = setInterval(animation,100,pathArray);
 
 </script>
 
+<script>
+
+</script>
+<style>
+    table{
+        margin:0 auto;
+        margin-top:300px;
+
+    }
+    td{
+        width: 20px;
+        height: 20px;
+        text-align:center;
+    }
+    .path{
+         background-color: aquamarine;
+    }
+    .wall{
+        background-color: dimgray;
+    }
+</style>
 </body>
 
 </html>
