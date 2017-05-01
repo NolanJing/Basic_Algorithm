@@ -1,319 +1,67 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>blog</title>
+    <style>
+        #maze {
+            margin: 0 auto;
+            margin-top: 100px;
+            text-align: center;
+
+        }
+
+        #maze table {
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+
+        #maze span {
+            font-family: "Bodoni MT";
+            font-size: 20px;
+            font-weight: 700;
+            color: brown;
+        }
+
+        td {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            color: white;
+        }
+
+       .startNode {
+            background-color: aqua;
+
+        }
+        .endNode {
+            background-color:red;
+        }
+        .wall {
+            background-color: #777;
+        }
+    </style>
 </head>
 <body>
 <div id="maze">
     <span> a little maze made by Js.</span>
     <table border="1" class="t">
     </table>
+    <button onclick="reset()">reset</button>
 </div>
+<script src="prim.js"></script>
 <script>
-    function bfs(maze) {
-        let mazeData = maze;
-        for (let i = mazeData.length - 1; i >= 0; i--) {
-            for (let j = mazeData[i].length - 1; j >= 0; j--) {
-                mazeData[i][j] = {
-                    value: mazeData[i][j],
-                    isVisited: false,
-                    x: i,
-                    y: j
-                }
-            }
-        }
-
-
-        let res = [];
-
-        let node = mazeData[mazeData.length - 1][mazeData.length - 1]
-        // 遍历每个节点
-        while (node) {
-            // console(a)
-            let queue = []; // 辅助队列
-            if (!node.isVisited) {
-                node.isVisited = true;
-                queue.unshift(node); // 入队
-                while (queue.length) { // 队列非空
-                    let u = queue.shift(); // 队首元素 出队
-                    u.neighbor = [];
-                    if (mazeData[node.x - 1] && mazeData[node.x - 1][node.y].value) {// 上
-                        if (!mazeData[node.x - 1][node.y].isVisited)
-                            u.neighbor.push(mazeData[node.x - 1][node.y]);
-                    }
-                    if (mazeData[node.x][node.y + 1] && mazeData[node.x][node.y + 1].value) {// 右
-                        if (!mazeData[node.x][node.y + 1].isVisited)
-                            u.neighbor.push(mazeData[node.x][node.y + 1]);
-                    }
-                    if (mazeData[node.x + 1] && mazeData[node.x + 1][node.y].value) {// 下
-                        if (!mazeData[node.x + 1][node.y].isVisited)
-                            u.neighbor.push(mazeData[node.x + 1][node.y]);
-                    }
-                    if (mazeData[node.x][node.y - 1] && mazeData[node.x][node.y - 1].value) {// 左
-                        if (!mazeData[node.x][node.y - 1].isVisited)
-                            u.neighbor.push(mazeData[node.x][node.y - 1]);
-                    }
-                    // 遍历邻居节点
-                    for (neighborNode of u.neighbor) {
-                        if (!neighborNode.isVisited) {
-                            neighborNode.isVisited = true;
-                            queue.push(neighborNode);
-                        }
-                    }// for 遍历邻居节点
-                    node = queue[0];
-                    res.push(node);
-                }// while
-            }// visited
-        }
-        let pathTree = res[0];
-        let endNode = printPathTree(pathTree);
-        let pathArray = [];
-        while (endNode) {
-            pathArray.push([endNode.x, endNode.y])
-            endNode = endNode.pre;
-        }
-        pathArray.push([maze.length - 1, maze.length - 1]);
-        return pathArray;
+    function reset() {
+        document.querySelector('table').innerHTML='';
+        maze.init();
     }
-    // 打印出所有路径树
-    function printPathTree(pathTree) {
-        res = [];
-        function getChild(node) {
-            if (node.x == 0 && node.y == 0) {
-                res = node;
-            } else {
-                node.neighbor.forEach(neighbor => {
-                    neighbor.pre = node;
-                    getChild(neighbor);
-                })
-            }// if
-        }// getChild
-        getChild(pathTree);
-        return res;
-    }
+
+    let maze = new Maze(6, 6, [1, 0], [11, 12]);
+    maze.init();
+    console.log(maze);
+
 </script>
-<script>
-    let col = 10;
-    let row = 10;
 
-    // 生成 2R+1 的 R 行 R 列 全 1 数组；
-    function genMaze(col, row) {
-        let mazeArray = [];
-        for (let i = 0; i < 2 * col + 1; i++) {
-            let arr = [];
-
-            for (let j = 0; j < 2 * row + 1; j++) {
-                if (i % 2 == 0 || j % 2 == 0) {
-                    arr.push({
-                        value: 0,
-                        x: j,
-                        y: i,
-                        isWall: true
-                    });
-                } else {
-                    arr.push({
-                        value: 1,
-                        isVisited: false,
-                        isWall: false,
-                        x: j,
-                        y: i
-                    });
-                }
-            }
-            mazeArray[i] = arr;
-        }
-
-        return mazeArray;
-    }
-
-
-    function random(k) {
-        return Math.floor(Math.random() * k);
-    }
-
-    let mazeArray = genMaze(col, row);
-    let currentNode = mazeArray[2 * random(row) + 1][2 * random(col) + 1];
-    // let currentNode = mazeArray[1][0];
-    currentNode.isVisited = true;
-    // console.log(currentNode);
-    console.log(mazeArray);
-    let visitedList = [];
-    visitedList.push(currentNode);
-
-    while (currentNode.isVisited) {
-        // 得到当前访问格子的四周（上下左右）的格子，
-        // 在这些格子中随机选择一个没有在访问列表中的格子，
-        // 如果找到，则把该格子和当前访问的格子中间的墙打通(置为0)，
-        // 把该格子作为当前访问的格子，并放入访问列表。
-
-        // 如果周围所有的格子都已经访问过，则从已访问的列表中，随机选取一个作为当前访问的格子。
-        let upNode = mazeArray[currentNode.y - 2] ? mazeArray[currentNode.y - 2][currentNode.x] : {isVisited: true};
-        let rightNode = mazeArray[currentNode.x + 2] ? mazeArray[currentNode.y][currentNode.x + 2] : {isVisited: true};
-        let downNode = mazeArray[currentNode.y + 2] ? mazeArray[currentNode.y + 2][currentNode.x] : {isVisited: true};
-        let leftNode = mazeArray[currentNode.x - 2] ? mazeArray[currentNode.y][currentNode.x - 2] : {isVisited: true};
-        let neighborArray = [];
-
-        if (!upNode.isVisited) {
-            neighborArray.push(upNode);
-        }
-        if (!rightNode.isVisited) {
-            neighborArray.push(rightNode);
-        }
-        if (!downNode.isVisited) {
-            neighborArray.push(downNode);
-        }
-        if (!leftNode.isVisited) {
-            neighborArray.push(leftNode);
-        }
-
-        // console.log(neighborArray.length)
-        if (neighborArray.length !== 0) { // 如果找到
-
-            let neighborNode = neighborArray[random(neighborArray.length)];
-            mazeArray[(neighborNode.y + currentNode.y) / 2][(neighborNode.x + currentNode.x) / 2].value = 1;
-            // console.log(neighborNode);
-            neighborNode.isVisited = true;
-            visitedList.push(neighborNode);
-            currentNode = neighborNode;
-
-        } else {
-
-            // console.log('ss');
-            // console.log(visitedList);
-            var aa = visitedList;
-            currentNode = visitedList[random(visitedList.length)];
-            if (!currentNode) {
-                break;
-            }
-            currentNode.isVisited = true;
-            let tempArr = [];
-            visitedList.forEach(item => {
-                if (item !== currentNode) {
-                    tempArr.push(item);
-                }
-            });
-
-            visitedList = tempArr;
-
-            // console.log(visitedList);
-
-
-            // break;
-        }
-
-        /*console.log(upNode);
-         console.log(rightNode);
-         console.log(downNode);
-         console.log(leftNode);*/
-
-
-    }
-
-
-    function printMaze(mazeArray) {
-        let col = mazeArray.length,
-            row = mazeArray[0].length;
-
-
-        b = [];
-        /* mazeArray.forEach(rowArr => {
-         b.push([]);
-         rowArr.forEach(item => {
-         // let a = item.value;
-         item = 1;
-         delete item.value;
-
-         })
-         // console.log(str)
-         }) */
-        for (let i = 0; i < col; i++) {
-            b.push([]);
-            for (let j = 0; j < row; j++) {
-                b[i].push(mazeArray[i][j].value);
-
-            }
-
-        }
-
-    }
-    printMaze(mazeArray);
-
-    b[0][0]=1;
-    b[0][1]=1;
-    b[b.length-1][b[0].length-1]=1;
-    b[b.length-1][b[0].length-2]=1;
-
-
-    mazeData =b;
-    let pathArray = bfs(mazeData);
-
-    for (let i = 0, len = mazeData.length; i < len; i++) {
-        let tr = document.createElement("tr");
-        document.querySelector('table').appendChild(tr);
-        for (let j = 0, len = mazeData[i].length; j < len; j++) {
-            let td = document.createElement("td");
-            if (mazeData[i][j].value) {
-            } else {
-                td.setAttribute("class", "wall");
-            }
-            tr.appendChild(td);
-        }
-    }
-    let count = 0;
-    function animation(pathArray) {
-        if (count < pathArray.length) {
-            let trArr = document.getElementsByTagName('tr');
-            let tdArr = trArr[pathArray[count][0]].getElementsByTagName('td');
-            let cell = tdArr[pathArray[count][1]];
-            cell.setAttribute("class", "path")
-            count++
-        } else {
-            clearInterval(sh);
-            console.log('finded the path')
-        }
-
-
-    }
-    let sh = setInterval(animation, 50, pathArray);
-</script>
-<script>
-</script>
-<style>
-    #maze {
-        margin: 0 auto;
-        margin-top: 100px;
-        text-align: center;
-
-    }
-
-    #maze table {
-        margin: 0 auto;
-        margin-top: 10px;
-    }
-
-    #maze span {
-        font-family: "Bodoni MT";
-        font-size: 20px;
-        font-weight: 700;
-        color: brown;
-    }
-
-    td {
-        width: 20px;
-        height: 20px;
-        text-align: center;
-    }
-
-    .path {
-        background-color: aquamarine;
-    }
-
-    .wall {
-        background-color: #777;
-    }
-</style>
 </body>
 
 </html>

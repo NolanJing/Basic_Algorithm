@@ -14,7 +14,7 @@ function bfs(maze) {
 
     let res = [];
 
-    let node = mazeData[mazeData.length - 1][mazeData.length - 1]// 遍历每个节点
+    let node = mazeData[mazeData.length - 1][mazeData.length - 1]; // 遍历每个节点
 
     while (node) {
         // console(a)
