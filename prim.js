@@ -144,7 +144,7 @@ Maze.prototype.findPath = function () {
     let node = this.mazeDataArray[this.end[0]][this.end[1]]; // 迷宫的出口
 
     while (node) {
-        // console(a)
+          // console.log(node)
         let queue = []; // 辅助队列
 
         if (!node.isVisited) {

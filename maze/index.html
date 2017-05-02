@@ -37,6 +37,9 @@
         .endNode {
             background-color:red;
         }
+        .path {
+            background-color: aqua;
+        }
         .wall {
             background-color: #777;
         }
@@ -58,8 +61,8 @@
     }
 
 
-  // let maze = new Maze(6, 6, [1, 0], [11, 12]);
-     let maze = new Maze(3, 3, [1, 0], [5, 6]);
+   // let maze = new Maze(6, 6, [1, 0], [11, 12]);
+     let maze = new Maze(32, 32, [1, 1], [63, 63]);
     maze.init();
     console.log(maze);
 
