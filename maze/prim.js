@@ -1,8 +1,18 @@
-function Maze(col, row, start, end) {
+/**
+ *
+ * @param row 行
+ * @param col 列
+ * @param start[x, y] 起点坐标
+ * @param end[终点坐标] 终点坐标
+ * @param speed 动画速度
+ * @constructor 迷宫类
+ */
+function Maze(row, col,  start, end, speed = 10) {
     this.col = col;
     this.row = row;
     this.start = start;
     this.end = end;
+    this.speed = speed;
 }
 
 Maze.prototype.random = function (k) {
@@ -141,27 +151,18 @@ Maze.prototype.findPath = function () {
     }
     // 路径数组
     this.path = [];
-
     let node = this.mazeDataArray[this.start[0]][this.start[1]]; // 迷宫的出口
-
-
-    let pathTree = node;
-
+    // let pathTree = node;
     let queue = []; // 辅助队列
-
-    // if (!node.isVisited) {
     node.isVisited = true;
-    // console.log(node)
     queue.unshift(node); // 入队
-
     while (queue.length) { // 队列非空
-        // console.log(queue.length);
         let firstItem = queue.shift(); // 队首元素 出队
-        // console.log(firstItem);
         firstItem.neighbor = [];
         if (this.mazeDataArray[node.i - 1] && this.mazeDataArray[node.i - 1][node.j].value) {// 上
             if (!this.mazeDataArray[node.i - 1][node.j].isVisited) {
                 firstItem.neighbor.push(this.mazeDataArray[node.i - 1][node.j]);
+                // 记录前置节点的坐标，以便最后打印出路径
                 this.mazeDataArray[node.i - 1][node.j].pre = [firstItem.i, firstItem.j];
             }
 
@@ -185,10 +186,7 @@ Maze.prototype.findPath = function () {
                 firstItem.neighbor.push(this.mazeDataArray[node.i][node.j - 1]);
                 this.mazeDataArray[node.i][node.j - 1].pre = [firstItem.i, firstItem.j];
             }
-
         }
-
-        // console.log(u.neighbor);
         // 遍历邻居节点
         for (neighborNode of firstItem.neighbor) {
             if (!neighborNode.isVisited) {
@@ -196,56 +194,44 @@ Maze.prototype.findPath = function () {
                 queue.push(neighborNode);
             }
 
-        }// for 遍历邻居节点
-
+        }
         node = queue[0];
-        // console.log(node.i + ',' + node.j + '->')
-        // this.path.push(node);
-        //console.log(node.toString());
-
         if (node && node.i === this.end[0] && node.j === this.end[1]) {
-            console.log(node);
             this.pre = node;
             break;
         }
-        // console.log(node);
     }// while
 
     let item = this.pre;
 
     while (item.pre) {
         this.path.unshift([item.pre[0], item.pre[1]]);
+        // 生成路径数组，path[0]为起点坐标
         item = this.mazeDataArray[item.pre[0]][item.pre[1]];
     }
-
 };
 
 Maze.prototype.Animation = function () {
     let count = 0;
 
     function animation(pathArray) {
-        // console.log(pathArray)
         if (count < pathArray.length) {
             let trArr = document.getElementsByTagName('tr');
             let tdArr = trArr[pathArray[count][0]].getElementsByTagName('td');
             let cell = tdArr[pathArray[count][1]];
-            cell.setAttribute("class", "path")
+            cell.setAttribute("class", "path");
             count++
         } else {
             clearInterval(sh);
             console.log('finded the path')
         }
-
-
     }
-
-    // console.log(this.path)
-    let sh = setInterval(animation, 50, this.path);
+    let tem = setInterval(animation, this.speed, this.path);
 };
+
 Maze.prototype.init = function () {
     this.generate();
     this.drawDom();
     this.findPath();
-    this.Animation();
-
+    // this.Animation();
 };

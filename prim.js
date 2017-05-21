@@ -193,13 +193,6 @@ Maze.prototype.findPath = function () {
 
     console.log(pathTree);
 
-    /*let pathArray = [];
-     while (endNode) {
-     pathArray.push([endNode.x, endNode.y])
-     endNode = endNode.pre;
-     }
-     console.log(pathArray)*/
-
 };
 
 Maze.prototype.init = function () {
