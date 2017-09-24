@@ -2,177 +2,65 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>blog</title>
+    <title>全排列</title>
     <style>
-        #maze {
-            margin: 0 auto;
-            margin-top: 100px;
-            text-align: center;
-
-        }
-
-        #maze table {
-            margin: 0 auto;
-            margin-top: 10px;
-        }
-
-        #maze span {
-            font-family: "Bodoni MT";
-            font-size: 20px;
-            font-weight: 700;
-            color: brown;
-        }
-
-        td {
-            width: 20px;
-            height: 20px;
-            text-align: center;
-            color: white;
-        }
-
-        .path {
-            background-color: aqua;
-
-        }
-
-        .common {
-            background-color: red;
-        }
-        .node {
-            background-color: crimson;
-        }
-
-        .wall {
-            background-color: #777;
-        }
     </style>
 </head>
 <body>
-<div id="maze">
-    <span>The Longest Common Subsequence.</span>
-    <table border="1" class="t">
-    </table>
+<div>
+    <p><h2>归并</h2>1.两个数组的归并</p>
 </div>
 
-<script>
-     let str2 = "DAFWAFSFAEF";
-     let str1 = "SDFAWEFSDFXZ";
-
-    /*let str2 = "GCCCTAGCG";
-    let str1 = "GCGCAATG";*/
-    function genTable(x, y) {
-        let xlen = x.length;
-        let ylen = y.length;
+ 
+    
 
 
-        let lengthTable = [];
-        // 基础表格
-        for (let i = 0; i < xlen + 2; i++) {
-            lengthTable[i]=[];
-            for (let j = 0; j < ylen + 2; j++) {
-                if(i==0){
-                    if(y[j-2]){
-                        lengthTable[i][j]={value:y[j-2]}
-                    }else {
-                        lengthTable[i][j]={value:'-'}
-                    }
-                }else{
-                    if(j==0){
-                        if(x[i-2]){
-                            lengthTable[i][j]={value:x[i-2]}
-                        }else {
-                            lengthTable[i][j]={value:'-'}
-                        }
-                    }else{
-                        lengthTable[i][j]={value:0}
-                    }
 
-                }
-
-            }
-        }
-        // 填表
-         for (let i = 2, ilen = lengthTable.length; i < ilen; i++) {
-            for (let j = 2, jlen = lengthTable[i].length; j < jlen; j++) {
-                if (x[i - 2] == y[j - 2]) {
-                    lengthTable[i][j] = {
-                        value: lengthTable[i - 1][j - 1].value + 1,
-                        pre: [i - 1, j - 1],
-                        index: [i, j]
-                    }
-
-                    // console.log(x[i-1])
-                } else {
-                    lengthTable[i][j] = lengthTable[i][j - 1].value
-                    >= lengthTable[i - 1][j].value
-                        ? {
-                            value: lengthTable[i][j - 1].value,
-                            pre: [i, j - 1],
-                            index: [i, j]
-                        }
-                        : {
-                            value: lengthTable[i - 1][j].value,
-                            pre: [i - 1, j],
-                            index: [i, j]
-                        };
-                }
-
-            }
-        }
-
-        let node = lengthTable[lengthTable.length - 1][lengthTable[lengthTable.length - 1].length - 1];
-       let path =[];
-       let common =[];
-       // 找对角线 生成路径
-         while (node.pre) {
-            // console.log(node.pre);
-            // console.log(node.value);
-            // console.log(now);
-            if (node.value !== lengthTable[node.pre[0]][node.pre[1]].value) {
-                common.push(node.index);
-                // lengthTable[node.index[0]][node.index[1]].isChange = 1;
-                // console.log(x[node.index[0]])
-            }
-            // node.isPath = true;
-            path.push(node.index);
-            node = lengthTable[node.pre[0]][node.pre[1]];
-        }
-
-        return {
-            lengthTable:lengthTable,
-            common:common,
-            path:path
-        }
-    }
-
-    let res = genTable(str1, str2);
-    console.log(res);
-// 画基础表格
-    for (let i = 0, len = res.lengthTable.length; i < len; i++) {
-        let tr = document.createElement("tr");
-        document.querySelector('table').appendChild(tr);
-        for (let j = 0, len = res.lengthTable[i].length; j < len; j++) {
-            let td = document.createElement("td");
-            // start
-            td.innerHTML = res.lengthTable[i][j].value;
-            td.setAttribute("class", "wall");
-            tr.appendChild(td);
-        }
-    }
-//画路径
-    let table = document.getElementsByTagName('table');
-    res.path.forEach(pathNode=>{
-        table[0].rows[pathNode[0]].cells[pathNode[1]].setAttribute("class", "path");
-    });
-    res.common.forEach(commonNode=>{
-        table[0].rows[commonNode[0]].cells[commonNode[1]].setAttribute("class", "node");
-        table[0].rows[0].cells[commonNode[1]].setAttribute("class", "common");
-        table[0].rows[commonNode[0]].cells[0].setAttribute("class", "common");
-    });
-    console.log(table[0].rows[0].cells[0])
-</script>
+</body><html xmlns="http://www.w3.org/1999/xhtml">  
+<head>  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <title>Full Permutation(Recursive Swap) - Mengliao Software</title>  
+</head>  
+<body>  
+<p>Full Permutation(Recursive Swap)<br/></p>  
+<script type="text/javascript">  
+let res = [];
 
 
-</body>
 
+function loopInsert(arr,key){
+   
+    for(var i = 0; i < arr.length+1; i++){
+        let afterInsert =  arr.slice(0,i).concat(key,arr.slice(i)) 
+        console.log(afterInsert)
+  }
+}
+
+
+ function allRange(arr){
+         
+   if(arr.length > 1) {       
+         
+        let left = arr[0]
+        let rest = arr.slice(1)
+
+       
+        for(var i = 0; i < rest.length + 1; i++){
+            let afterInsert =  rest.slice(0,i).concat(left, rest.slice(i))               
+            console.log(afterInsert)
+        } 
+
+        return allRange(rest);
+                 
+    } else {
+        console.log('end')
+        console.log(arr)
+        return arr
+    }     
+ }
+
+  allRange([1,2,3,4]) 
+</script>  
+</body>  
+</html> 
 </html>
